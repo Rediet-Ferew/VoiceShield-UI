@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { BsFillFileEarmarkMusicFill } from 'react-icons/bs';
-import {MdHourglassEmpty} from 'react-icons/md';
-import {TiTickOutline} from 'react-icons/ti';
+import React, { useState } from "react";
+import axios from "axios";
+import { BsFillFileEarmarkMusicFill } from "react-icons/bs";
+import { MdHourglassEmpty } from "react-icons/md";
+import { TiTickOutline } from "react-icons/ti";
 import { TiWarning } from "react-icons/ti";
 // import {IoWarningOutline} from 'react-icons/io';
 
@@ -10,7 +10,7 @@ const ThreatPredictionVoice = () => {
   const [audioFile, setAudioFile] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState('default'); // Default model
+  const [selectedModel, setSelectedModel] = useState("default"); // Default model
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -19,7 +19,7 @@ const ThreatPredictionVoice = () => {
 
   const handleUpload = async () => {
     if (!audioFile) {
-      alert('Please select a voice file');
+      alert("Please select a voice file");
       return;
     }
 
@@ -28,26 +28,31 @@ const ThreatPredictionVoice = () => {
 
       // Prepare FormData to send the file and selected model
       const formData = new FormData();
-      formData.append('audio', audioFile);
-      formData.append('selectedModel', selectedModel);
+      formData.append("audio", audioFile);
+      formData.append("selectedModel", selectedModel);
 
       // Define API endpoint based on the selected model
+
       let apiEndpoint =
-        selectedModel === 'model1'
-          ? 'https://threat-detection-final-year.onrender.com/api/v1/predict/audio'
-          : 'https://threat-detection-final-year.onrender.com/api/v2/predict/audio';
+        selectedModel === "model1"
+          ? "https://threat-detection-final-year.onrender.com/api/v1/predict/audio"
+          : selectedModel === "model2"
+          ? "https://threat-detection-final-year.onrender.com/api/v2/predict/audio"
+          : selectedModel === "model3"
+          ? "https://threat-detection-final-year.onrender.com/api/v3/predict/audio"
+          : null;
 
       // Send the voice file and selected model to the prediction API
       const response = await axios.post(apiEndpoint, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
       // Set the prediction result
       setPredictionResult(response.data);
     } catch (error) {
-      console.error('Error predicting threat:', error);
+      console.error("Error predicting threat:", error);
     } finally {
       setLoading(false);
     }
@@ -55,7 +60,7 @@ const ThreatPredictionVoice = () => {
 
   const handleBoxClick = () => {
     // Trigger file input click when box is clicked
-    document.getElementById('fileInput').click();
+    document.getElementById("fileInput").click();
   };
 
   const handleDragOver = (e) => {
@@ -84,10 +89,18 @@ const ThreatPredictionVoice = () => {
         >
           <BsFillFileEarmarkMusicFill className="mx-auto w-16 h-16 my-4" />
           <p className="text-gray-500">
-            {audioFile ? audioFile.name : 'Click to upload or drag and drop a file'}
+            {audioFile
+              ? audioFile.name
+              : "Click to upload or drag and drop a file"}
           </p>
         </div>
-        <input type="file" id="fileInput" accept="audio/*" onChange={handleFileChange} className="mb-2 hidden" />
+        <input
+          type="file"
+          id="fileInput"
+          accept="audio/*"
+          onChange={handleFileChange}
+          className="mb-2 hidden"
+        />
         <div className="flex justify-center">
           <select
             onChange={handleModelChange}
@@ -95,6 +108,7 @@ const ThreatPredictionVoice = () => {
           >
             <option value="model1">Model 1</option>
             <option value="model2">Model 2</option>
+            <option value="model3">Model 3</option>
           </select>
           <button
             onClick={handleUpload}
@@ -107,54 +121,45 @@ const ThreatPredictionVoice = () => {
 
       {loading ? (
         <div className="mt-4">
-        <MdHourglassEmpty className="font-bold text-blue-500 animate-spin ml-4" />
-        <p className="text-blue-500 font-bold mt-2 font-poppins text-center">Loading...</p>
-      </div>
+          <MdHourglassEmpty className="font-bold text-blue-500 animate-spin ml-4" />
+          <p className="text-blue-500 font-bold mt-2 font-poppins text-center">
+            Loading...
+          </p>
+        </div>
       ) : (
         predictionResult !== null && (
           <div className="mt-4">
-            
             {predictionResult.predicted_class === "0" ? (
               // <p>No threat</p>
-              <div
-              className="hover:border border-green-600 p-4 rounded-md transition-all duration-300 ease-in-out"
-            >
-              <p className="text-green-600 font-bold flex items-center font-poppins">
-                No Threat <TiTickOutline />
-              </p>
-              <p className="font-poppins">
-                The predicted probability that this audio might not be a threat
-                is{" "}
-                {(
-                  100 -
-                  parseFloat(predictionResult.confidence) * 100
-                ).toFixed(2)}
-                %
-              </p>
-            </div>
+              <div className="hover:border border-green-600 p-4 rounded-md transition-all duration-300 ease-in-out">
+                <p className="text-green-600 font-bold flex items-center font-poppins">
+                  No Threat <TiTickOutline />
+                </p>
+                <p className="font-poppins">
+                  The predicted probability that this audio might not be a
+                  threat is{" "}
+                  {(
+                    100 -
+                    parseFloat(predictionResult.confidence) * 100
+                  ).toFixed(2)}
+                  %
+                </p>
+              </div>
             ) : (
               // <p>Threat Found</p>
-              <div
-                className="hover:border border-yellow-600 p-4 rounded-md transition-all duration-300 ease-in-out"
-              >
+              <div className="hover:border border-yellow-600 p-4 rounded-md transition-all duration-300 ease-in-out">
                 <p className="text-yellow-600 font-bold flex items-center font-poppins">
                   Threat Detected <TiWarning />
                 </p>
                 <p className="font-poppins">
-                  The predicted probability that this audio might be a threat
-                  is{" "}
+                  The predicted probability that this audio might be a threat is{" "}
                   {(parseFloat(predictionResult.confidence) * 100).toFixed(2)}%
                 </p>
               </div>
             )}
           </div>
         )
-      )
-
-      
-      }
-      
-
+      )}
     </div>
   );
 };
