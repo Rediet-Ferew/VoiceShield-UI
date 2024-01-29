@@ -89,7 +89,7 @@ const ThreatPredictionText = () => {
                 No Threat <TiTickOutline />
               </p>
               <p className="font-poppins">
-                The predicted probability that this audio might not be a threat
+                The predicted probability that this sentence might not be a threat
                 is{" "}
                 {(
                   100 -
@@ -107,7 +107,7 @@ const ThreatPredictionText = () => {
                   Threat Detected <TiWarning />
                 </p>
                 <p className="font-poppins">
-                  The predicted probability that this audio might be a threat
+                  The predicted probability that this sentence might be a threat
                   is{" "}
                   {(parseFloat(predictionResult.confidence) * 100).toFixed(2)}%
                 </p>

@@ -140,7 +140,7 @@ const ThreatPredictionVoice = () => {
                   No Threat <TiTickOutline />
                 </p>
                 <p className="font-poppins">
-                  The predicted probability that this audio might not be a
+                  The predicted probability that this audio might be a
                   threat is{" "}
                   {(
                     100 -
