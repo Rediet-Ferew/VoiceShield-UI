@@ -33,14 +33,18 @@ const ThreatPredictionVoice = () => {
 
       // Define API endpoint based on the selected model
 
-      let apiEndpoint =
-        selectedModel === "model1"
-          ? "https://threat-detection-final-year.onrender.com/api/v1/predict/audio"
-          : selectedModel === "model2"
-          ? "https://threat-detection-final-year.onrender.com/api/v2/predict/audio"
-          : selectedModel === "model3"
-          ? "https://threat-detection-final-year.onrender.com/api/v3/predict/audio"
-          : null;
+      let apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v1/predict/audio"
+      if (selectedModel === "model1") {
+        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v1/predict/audio"
+      }
+      else if (selectedModel === 'model2') {
+        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v2/predict/audio"
+      }
+      else {
+        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v3/predict/audio"
+      }
+
+ 
 
       // Send the voice file and selected model to the prediction API
       const response = await axios.post(apiEndpoint, formData, {
