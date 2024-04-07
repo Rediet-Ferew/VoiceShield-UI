@@ -80,7 +80,7 @@ const ThreatPredictionText = () => {
         predictionResult !== null && (
           <div className="mt-4">
             
-            {predictionResult.predicted_class === "0" ? (
+            {predictionResult.predictሽed_class === "0" ? (
               
               <div
               className="hover:border border-green-600 p-4 rounded-md transition-all duration-300 ease-in-out"

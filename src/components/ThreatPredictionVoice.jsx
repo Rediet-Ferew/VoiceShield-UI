@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { BsFillFileEarmarkMusicFill } from "react-icons/bs";
 import { MdHourglassEmpty } from "react-icons/md";
-import { TiTickOutline } from "react-icons/ti";
-import { TiWarning } from "react-icons/ti";
-// import {IoWarningOutline} from 'react-icons/io';
+import { TiTickOutline, TiWarning } from "react-icons/ti";
 
 const ThreatPredictionVoice = () => {
   const [audioFile, setAudioFile] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("default"); // Default model
+  const [selectedModel, setSelectedModel] = useState("model1"); // Default model
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -32,19 +30,12 @@ const ThreatPredictionVoice = () => {
       formData.append("selectedModel", selectedModel);
 
       // Define API endpoint based on the selected model
-
-      let apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v1/predict/audio"
-      if (selectedModel === "model1") {
-        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v1/predict/audio"
+      let apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v1/predict/audio";
+      if (selectedModel === "model2") {
+        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v2/predict/audio";
+      } else if (selectedModel === "model3") {
+        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v3/predict/audio";
       }
-      else if (selectedModel === 'model2') {
-        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v2/predict/audio"
-      }
-      else {
-        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v3/predict/audio"
-      }
-
- 
 
       // Send the voice file and selected model to the prediction API
       const response = await axios.post(apiEndpoint, formData, {
@@ -63,7 +54,6 @@ const ThreatPredictionVoice = () => {
   };
 
   const handleBoxClick = () => {
-    // Trigger file input click when box is clicked
     document.getElementById("fileInput").click();
   };
 
@@ -134,23 +124,17 @@ const ThreatPredictionVoice = () => {
         predictionResult !== null && (
           <div className="mt-4">
             {predictionResult.predicted_class === "0" ? (
-              // <p>No threat</p>
               <div className="hover:border border-green-600 p-4 rounded-md transition-all duration-300 ease-in-out">
                 <p className="text-green-600 font-bold flex items-center font-poppins">
                   No Threat <TiTickOutline />
                 </p>
                 <p className="font-poppins">
-                  The predicted probability that this audio might be a
-                  threat is{" "}
-                  {(
-                    100 -
-                    parseFloat(predictionResult.confidence) * 100
-                  ).toFixed(2)}
-                  %
+                  The predicted probability that this audio might be in this
+                  category is{" "}
+                  {(parseFloat(predictionResult.confidence) * 100).toFixed(2)}%
                 </p>
               </div>
             ) : (
-              // <p>Threat Found</p>
               <div className="hover:border border-yellow-600 p-4 rounded-md transition-all duration-300 ease-in-out">
                 <p className="text-yellow-600 font-bold flex items-center font-poppins">
                   Threat Detected <TiWarning />
@@ -163,6 +147,16 @@ const ThreatPredictionVoice = () => {
             )}
           </div>
         )
+      )}
+
+      {/* Audio Player */}
+      {audioFile && (
+        <div className="mt-4">
+          <audio controls>
+            <source src={URL.createObjectURL(audioFile)} type="audio/wav" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
       )}
     </div>
   );
