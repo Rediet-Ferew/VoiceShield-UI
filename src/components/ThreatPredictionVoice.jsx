@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsFillFileEarmarkMusicFill } from "react-icons/bs";
 import { MdHourglassEmpty } from "react-icons/md";
@@ -9,10 +9,19 @@ const ThreatPredictionVoice = () => {
   const [predictionResult, setPredictionResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState("model1"); // Default model
+  const [audioSource, setAudioSource] = useState(null);
+
+  useEffect(() => {
+    if (audioFile) {
+      setAudioSource(URL.createObjectURL(audioFile));
+    }
+  }, [audioFile]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setAudioFile(file);
+    // Clear audioSource when a new file is selected
+    setAudioSource(null);
   };
 
   const handleUpload = async () => {
@@ -28,13 +37,17 @@ const ThreatPredictionVoice = () => {
       const formData = new FormData();
       formData.append("audio", audioFile);
       formData.append("selectedModel", selectedModel);
+      console.log(audioFile)
 
       // Define API endpoint based on the selected model
-      let apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v1/predict/audio";
+      let apiEndpoint =
+        "https://voiceshield-fastapi.onrender.com/api/v3/newAudioApi";
       if (selectedModel === "model2") {
-        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v2/predict/audio";
+        apiEndpoint =
+          "https://threat-detection-final-year.onrender.com/api/v2/predict/audio";
       } else if (selectedModel === "model3") {
-        apiEndpoint = "https://threat-detection-final-year.onrender.com/api/v3/predict/audio";
+        apiEndpoint =
+          "https://threat-detection-final-year.onrender.com/api/v3/predict/audio";
       }
 
       // Send the voice file and selected model to the prediction API
@@ -46,6 +59,9 @@ const ThreatPredictionVoice = () => {
 
       // Set the prediction result
       setPredictionResult(response.data);
+      if (audioFile) {
+        setAudioSource(URL.createObjectURL(audioFile));
+      }
     } catch (error) {
       console.error("Error predicting threat:", error);
     } finally {
@@ -76,7 +92,7 @@ const ThreatPredictionVoice = () => {
       <label className="mb-4 relative">
         <p className="mb-4 text-center font-bold">UPLOAD AND ATTACH FILE</p>
         <div
-          className="border-2 p-8 cursor-pointer hover:shadow-slate-500 bg-white rounded-xl p-10 my-4"
+          className="border-2 cursor-pointer hover:shadow-slate-500 bg-white rounded-xl p-10 my-4"
           onClick={handleBoxClick}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
@@ -150,10 +166,10 @@ const ThreatPredictionVoice = () => {
       )}
 
       {/* Audio Player */}
-      {audioFile && (
+      {audioFile && audioSource && (
         <div className="mt-4">
           <audio controls>
-            <source src={URL.createObjectURL(audioFile)} type="audio/wav" />
+            <source src={audioSource} type="audio/wav" />
             Your browser does not support the audio element.
           </audio>
         </div>
